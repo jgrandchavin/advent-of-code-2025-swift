@@ -13,7 +13,10 @@ let package = Package(
     ],
     targets: [
         .executableTarget(
-            name: "AdventOfCode2025"
+            name: "AdventOfCode2025",
+            resources: [
+                .process("Resources")
+            ]
         )
     ]
 )
