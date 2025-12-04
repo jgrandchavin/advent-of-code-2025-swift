@@ -18,7 +18,39 @@ struct Dial {
         self.position = startPosition
     }
 
-    /// Applies a move and returns the resulting position and the number of zero crossings.
+    /// Counts how many times the dial points at 0 during this move.
+    /// We count each time an intermediate step lands exactly on 0 (including if the final position is 0).
+    // Returns how many times the dial will land on 0 during the move.
+    private func zeroCrossCount(from currentPosition: Int, steps: Int, direction: Direction) -> Int {
+        // No movement or dial has no space: can't cross zero
+        if steps == 0 { return 0 }
+        let totalPositions = range.upperBound - range.lowerBound + 1
+        if totalPositions <= 1 { return 0 }
+
+        var count = 0
+        var pos = currentPosition
+
+        for _ in 1...steps {
+            // Move one step in the given direction
+            if direction == .right {
+                pos += 1
+                if pos > range.upperBound {
+                    pos = range.lowerBound
+                }
+            } else {
+                pos -= 1
+                if pos < range.lowerBound {
+                    pos = range.upperBound
+                }
+            }
+            if pos == 0 {
+                count += 1
+            }
+        }
+        return count
+    }
+
+    /// Applies a move and returns the resulting position.
     /// - Parameters:
     ///   - steps: Number of steps to move (non-negative).
     ///   - direction: Direction of the move.
@@ -47,13 +79,15 @@ struct Dial {
         return newPosition
     }
 
-    mutating func setPosition(direction: Direction, steps: Int) -> Int {
+    mutating func setPosition(direction: Direction, steps: Int) -> (position: Int, crossesZero: Int) {
         assert(steps >= 0, "steps must be non-negative")
-        let result = applyMove(
+        // Count crosses from the current position before mutating
+        let crosses = zeroCrossCount(from: self.position, steps: steps, direction: direction)
+        let newPosition = applyMove(
             steps: steps,
             direction: direction
         )
-        self.position = result
-        return result
+        self.position = newPosition
+        return (position: newPosition, crossesZero: crosses)
     }
 }

@@ -21,5 +21,6 @@ guard args.count > 1, let day = Int(args[1]) else {
 
 switch day {
 case 1: Day01.run()
+case 2: Day02.run()
 default: print("🔴 Day \(day) not implemented yet.")
 }

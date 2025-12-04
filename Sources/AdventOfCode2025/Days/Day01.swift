@@ -29,8 +29,10 @@ struct Day01 {
         var dial = Dial.init(range: 0...99, startPosition: 50)
 
         var zeroAtEndCount = 0
+        var zeroCrossesCount = 0
         
         // MARK: Compute position for every line and count 0
+        
         for stringInstruction in stringInstructions {
             guard
                 let instruction = DialInstruction.init(from: stringInstruction)
@@ -43,15 +45,18 @@ struct Day01 {
                 steps: instruction.steps
             )
 
-            if result == 0 {
+            if result.position == 0 {
                 zeroAtEndCount += 1
             }
             
-            print("Current position: \(result)")
+            zeroCrossesCount += result.crossesZero
+            
+            print("Current position: \(result.position)")
 
         }
 
-        print("Result: \(zeroAtEndCount)")
+        print("zeroAtEndCount: \(zeroAtEndCount)")
+        print("zeroAtEndCount: \(zeroCrossesCount)")
     }
 
 }
